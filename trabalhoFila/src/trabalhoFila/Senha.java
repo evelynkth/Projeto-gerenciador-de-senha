@@ -1,19 +1,22 @@
 package trabalhoFila;
 
+import java.time.LocalTime;
+
 public class Senha {
 
 	//atributos
 	private int id; //id da senha
 	private String tipo; //preferencial ou nao
 	private int chamadas; //tentativa de chamada
-	private String horaChegada; //horaChegada fazer o metodo que registra
-	private String horaAtenida; //hora que foi atendida
+	private LocalTime horaChegada; //horaChegada fazer o metodo que registra
+	private LocalTime horaAtendida; //hora que foi atendida
 	private boolean status; //se foi ou nao atendida, dps jogamos na fila nao atendida
 	
 	public Senha(int numero, String tipo) {
         this.id = numero;
         this.tipo = tipo;
         this.chamadas = 0;
+        this.horaChegada = LocalTime.now();
     }
 	
 
@@ -34,18 +37,22 @@ public class Senha {
 		this.chamadas++;
 	}
 	
-	public String getHoraChegada() {
+	public LocalTime getHoraChegada() {
 		return horaChegada;
 	}
 
-	public String getHoraAtenida() {
-		return horaAtenida;
+	public LocalTime getHoraAtenida() {
+		return horaAtendida;
 	}
 
 	public boolean isStatus() {
 		return status;
 	}
-
+	
+	//metodo registrar hora do atendimento
+	public void registrarAtendimento() {
+		this.horaAtendida = LocalTime.now();
+	}
 
 	}
 

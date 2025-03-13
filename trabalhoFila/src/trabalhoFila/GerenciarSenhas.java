@@ -14,7 +14,6 @@ public class GerenciarSenhas {
 	public void adicionarSenhaPref() {
 		Senha senhaP = new Senha(contadorSenhas++, "p");
 		filaPreferencial.adicionar(senhaP);
-		
 	}
 	
 	//metodo adicionar senha comum
@@ -55,7 +54,9 @@ public class GerenciarSenhas {
 				System.out.println("Senha movida para fila de não atendidos \n");
 	    	}
 	    	else {
+	    		senhaAtualP.registrarAtendimento();
 	            System.out.println("Senha " + senhaAtualP.getId() + " foi atendida com sucesso! \n");
+	            System.out.println("Hora de atendimento: "+senhaAtualP.getHoraAtenida());
 	        }
 	    	}
 			
@@ -81,7 +82,9 @@ public class GerenciarSenhas {
     				System.out.println("Senha movida para fila de não atendidos \n");
     			}
     			else {
-    	            System.out.println("Senha " + senhaAtualP.getId() + " foi atendida com sucesso!");
+    				senhaAtualC.registrarAtendimento();
+    	            System.out.println("Senha " + senhaAtualC.getId() + " foi atendida com sucesso!");
+    	            System.out.println("Hora de atendimento: "+senhaAtualC.getHoraAtenida());
     	        }
     	}
     }
