@@ -23,10 +23,12 @@ public class Main {
 		case 3:
 			GS.chamarSenha();
 			break;
+		case 4:
+			GS.exibirTodasSenhas();
 		}
 		
 		
 	}
 	System.out.println("Saindo do programa...");
-}
+    }
 }
