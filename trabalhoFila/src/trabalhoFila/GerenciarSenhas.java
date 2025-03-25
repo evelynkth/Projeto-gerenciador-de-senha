@@ -1,9 +1,16 @@
 package trabalhoFila;
 
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class GerenciarSenhas {
-	
+    int contAtendidas = 0;
+    int tamanhoTotalP = 0;
+    int tamanhoTotalC = 0;
+    LocalTime hChegada;
+    LocalTime hAtendida;
+    int atendidasPreferenciais = 0;
+    int atendidasComuns = 0;
 	  // Criar as duas filas principais, a fila não atendida, contador de senha para ir criando as senhas
     Fila filaPreferencial = new Fila();
     Fila filaComum = new Fila();
@@ -16,6 +23,8 @@ public class GerenciarSenhas {
         Senha senhaP = new Senha(contadorSenhas++, "p");
         filaPreferencial.adicionar(senhaP);
         filaHistorico.adicionar(senhaP); // Adiciona ao histórico
+        tamanhoTotalP++;
+        hChegada = LocalTime.now();
     }
 
     // Método adicionar senha comum
@@ -23,6 +32,8 @@ public class GerenciarSenhas {
         Senha senhaC = new Senha(contadorSenhas++, "c");
         filaComum.adicionar(senhaC);
         filaHistorico.adicionar(senhaC); // Adiciona ao histórico
+        tamanhoTotalC++;
+        hChegada = LocalTime.now();
     }
 
   
@@ -40,12 +51,20 @@ public class GerenciarSenhas {
         for (int i = 1; i <= 3; i++) {
             senhaAtualP.incrementarChamadas();
             System.out.println("Chamando senha: " + senhaAtualP.getId() + " (" + senhaAtualP.getTipo() + ") - Tentativa " + senhaAtualP.getChamadas());
-            System.out.println("O paciente respondeu a tentativa: \n Responda S ou N: \n");
+            System.out.println("O paciente respondeu a tentativa: \n Responda S, N ou Exit: \n");
             String resposta = sc.nextLine().trim().toUpperCase();
+
+    
 
             if (resposta.equals("S")) {
                 atendida = true;
+                contAtendidas++;
+                hAtendida = LocalTime.now();
+                atendidasPreferenciais++;
                 break;  // Se a resposta for 'S', a senha é atendida e o loop é interrompido
+            } else if (resposta.equals("EXIT")) {
+                System.out.println("Saindo da chamada de senha...");
+                return; // Sai do método e retorna para o menu principal
             }
         }
 
@@ -72,12 +91,21 @@ public class GerenciarSenhas {
         for (int i = 1; i <= 3; i++) {
             senhaAtualC.incrementarChamadas();
             System.out.println("Chamando senha: " + senhaAtualC.getId() + " (" + senhaAtualC.getTipo() + ") - Tentativa " + senhaAtualC.getChamadas());
-            System.out.println("O paciente respondeu a tentativa: \n Responda S ou N: \n");
+            System.out.println("O paciente respondeu a tentativa: \n Responda S, N ou Exit: \n");
             String resposta = sc.nextLine().trim().toUpperCase();
 
+          
             if (resposta.equals("S")) {
                 atendida = true;
+                contAtendidas++;
+                hAtendida = LocalTime.now();
+                atendidasComuns++;
                 break;  // Se a resposta for 'S', a senha é atendida e o loop é interrompido
+            }
+
+            else if (resposta.equals("EXIT")) {
+                System.out.println("Saindo da chamada de senha...");
+                return; // Sai do método e retorna para o menu principal
             }
         }
 
@@ -96,11 +124,16 @@ public class GerenciarSenhas {
         // Resetar o status de atendida para a próxima senha
         atendida = false;
     }
+    
 }
 
     // Método exibir o histórico completo de todas as senhas (atendidas e não atendidas)
     public void exibirTodasSenhas() {
         System.out.println("Exibindo senhas ainda na fila:");
+
+        if(filaPreferencial.tamanho() == 0 && filaComum.tamanho() == 0){
+            System.out.println("Sem senha nas filas preferencial e comum.");
+        }
 
         // Verificar senhas na fila preferencial
         for (int i = 0; i < filaPreferencial.tamanho(); i++) {
@@ -128,5 +161,53 @@ public class GerenciarSenhas {
                 System.out.println("Senha " + senha.getId() + " (" + senha.getTipo() + ") - Tentativas: " + senha.getChamadas());
             }
         }
+    }
+        //Media de Horario
+    public static String MediaHorario(LocalTime chegada, LocalTime atendida){
+        if (atendida == null){
+          System.out.println("Nenhuma senha foi atendida, calculando media de espera...");
+          return "0 minutos e 0 segundos";
+        }
+        long segChegada = chegada.toSecondOfDay();
+        long segAtendimento = atendida.toSecondOfDay();
+
+
+        long diferencaSegundos = segAtendimento - segChegada;
+
+        long minutos = diferencaSegundos / 60;
+        long segundos = diferencaSegundos % 60;
+    
+        return minutos + " minutos e " + segundos + " segundos";
+    }
+
+    public void percentualSenha(){
+        double percentSenhaP = 0;
+        if (tamanhoTotalP > 0) {
+            percentSenhaP = ((double) atendidasPreferenciais / tamanhoTotalP) * 100;
+        }
+    
+        // Percentual de senhas comuns atendidas
+        double percentSenhaC = 0;
+        if (tamanhoTotalC > 0) {
+            percentSenhaC = ((double) atendidasComuns / tamanhoTotalC) * 100;
+        }
+    
+        System.out.println("\n Percentual de senhas preferenciais atendidas: " + percentSenhaP + "%");
+        System.out.println("\n Percentual de senhas comuns atendidas: " + percentSenhaC + "%");
+    }
+    
+
+        //Gerar Relatorio
+    public void gerarRelatorio(){
+      
+        System.out.println("\n Número de senhas geradas (c/p): " +(tamanhoTotalC+tamanhoTotalP));
+
+        System.out.println("\n Número de senhas atendidas: " +contAtendidas);
+
+        System.out.println("\n Tempo médio de espera em minutos: " +MediaHorario(hChegada, hAtendida));
+
+        System.out.println("\n Número total de senhas não atendidas: " +filaNaoAtendida.tamanho());
+
+        percentualSenha();
     }
 }

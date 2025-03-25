@@ -10,8 +10,13 @@ public class Main {
 		
 		while(opcao != 6) {
 		System.out.println("Bem-vindo ao gerenciador de senha \n Escolha a opção: \n 1- Gerar Senha Normal \n 2 - Gerar Senha Preferencial \n 3- Chamar Senha \n 4- Listar Senhas na Fila \n 5- Gerar Relatório \n 6- Sair do Programa \n");		
-		opcao = sc.nextInt();
 		
+		
+		
+		opcao = sc.nextInt();
+		sc.nextLine();
+		
+
 
 		switch(opcao) {
 		case 1: 
@@ -25,10 +30,18 @@ public class Main {
 			break;
 		case 4:
 			GS.exibirTodasSenhas();
+			break;
+		case 5:
+			GS.gerarRelatorio();
+			break;
+		case 6:
+			System.out.print("Saindo do programa...");
+			break;
 		}
 		
 		
 	}
 	System.out.println("Saindo do programa...");
+	sc.close();
     }
 }
